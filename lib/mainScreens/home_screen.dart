@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
+import '../authentication/login.dart';
 import '../global/global.dart';
 import '../model/menus.dart';
 import '../uploadScreens/menus_upload_screen.dart';
@@ -18,6 +20,32 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  restrictBannedSellerFromUsingApp() async {
+    await FirebaseFirestore.instance
+        .collection("riders")
+        .doc(firebaseAuth.currentUser!.uid)
+        .get()
+        .then((snapshot) {
+      if (snapshot.data()!["status"] != "approved") {
+        Fluttertoast.showToast(msg: "you have been banned by admin");
+
+        firebaseAuth.signOut();
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const LoginScreen(),
+            ));
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    restrictBannedSellerFromUsingApp();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

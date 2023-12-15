@@ -22,7 +22,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   restrictBannedSellerFromUsingApp() async {
     await FirebaseFirestore.instance
-        .collection("riders")
+        .collection("sellers")
         .doc(firebaseAuth.currentUser!.uid)
         .get()
         .then((snapshot) {
